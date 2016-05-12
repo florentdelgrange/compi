@@ -30,3 +30,9 @@ def t_TXT(t)
     r'[a-z | A-Z | 0-9 | ; | & | < | > | " | _ | \- | \. | \\ | \/ | \\n | \\p | : | , | =]+'
     return t
 
+lexer = lex.lex()
+if __name__ == "__main__":
+    import sys
+    lexer.input(sys.stdin.read())
+    for token in lexer:
+        print "line %d : %s (%s)" %(token.lineo, token.type, token.value)
