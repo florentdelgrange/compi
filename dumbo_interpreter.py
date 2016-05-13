@@ -1,6 +1,6 @@
 import ply.lex as lex
 
-tokens = ('TXT', 'VARIABLE', 'STRING', 'PIPE', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
+tokens = ('TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
 
 t_TXT = r'[a-z|A-Z|0-9|;|&|<|>|"|_|\-|\.|\\|\/|\n|\p|:|,|=]+'
 
@@ -46,10 +46,6 @@ def t_FOR(t):
 
 def t_PRINT(t):
     r'print'
-    return t
-
-def t_PIPE(t):
-    'r\|'
     return t
 
 def t_SEMICOLON(t):
