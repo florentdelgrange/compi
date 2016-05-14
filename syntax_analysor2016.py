@@ -72,12 +72,22 @@ class ForNode():
          
 	def ex(self):
 		var_name = str(self.sons[0]) #nom de la var
+
+		initial_value = ""
+
+		if var_name in variables:
+			initial_value = variables[var_name]
+
 		list_or_var = self.sons[1].ex() #liste (ou rec liste dans une var)
 		action = self.sons[2]
 		res = ""
 		for var in list_or_var:
 			variables[var_name] = var
 			res+=action.ex()
+
+		if initial_value != "":
+			variables[var_name] = initial_value
+			
 		return res
 
 def p_programme_txt(p):
