@@ -148,7 +148,20 @@ class AndOrNode():
     	else:
     		return self.rhs.ex() or self.lhs.ex()
 
-
+class IntegerBooleanNode():
+    def __init__(self, *args):
+        self.lhs = args[0]
+        self.op = str(args[1])
+        self.rhs = args[2]
+         
+    def ex(self):
+		operations = {
+		'<' : lambda x,y: x<y,
+		'>' : lambda x,y: x>y,
+		'=' : lambda x,y: x==y,
+		'!=' : lambda x,y: x!=y,
+		}
+		return operations[self.op](self.lhs.ex(),self.rhs.ex())
 
 def p_programme_txt(p):
 	'''programme : txt'''
@@ -262,6 +275,13 @@ def p_boolean_expr_rec(p):
 						  |	boolean_expression OR boolean_expression'''
 
 	p[0] = AndOrNode(p[1],p[2],p[3])
+
+def p_boolean_expr_rec_integer(p):
+	'''boolean_expression : integer LT integer
+						  | integer BT integer
+						  | integer EQ integer
+						  | integer NE integer'''
+	p[0] = IntegerBooleanNode(p[1],p[2],p[3])
 
 def p_integer(p):
 	'''integer : INTEGER'''
