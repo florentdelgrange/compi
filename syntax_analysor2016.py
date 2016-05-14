@@ -277,10 +277,10 @@ def p_boolean_expr_rec(p):
 	p[0] = AndOrNode(p[1],p[2],p[3])
 
 def p_boolean_expr_rec_integer(p):
-	'''boolean_expression : integer LT integer
-						  | integer BT integer
-						  | integer EQ integer
-						  | integer NE integer'''
+	'''boolean_expression : variable LT variable
+						  | variable BT variable
+						  | variable EQ variable
+						  | variable NE variable'''
 	p[0] = IntegerBooleanNode(p[1],p[2],p[3])
 
 def p_integer(p):
