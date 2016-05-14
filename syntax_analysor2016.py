@@ -66,6 +66,22 @@ class PassNode():
 	def ex(self):
 		return self.son.ex()
 
+class OperationNode():
+	def __init__(self, *args):
+		self.left_op = args[0]
+		self.operator = str(args[1])
+		self.right_op = args[2]
+         
+	def ex(self):
+		operations = {
+		'+' : lambda x,y: x+y,
+		'-' : lambda x,y: x-y,
+		'/' : lambda x,y: x/y,
+		'*' : lambda x,y: x*y,
+		}
+		return operations[self.operator](self.left_op.ex(),self.right_op.ex())
+
+
 class ForNode():
 	def __init__(self, *args):
 		self.sons = args
@@ -87,8 +103,15 @@ class ForNode():
 
 		if initial_value != "":
 			variables[var_name] = initial_value
-			
+
 		return res
+
+class IntegerNode():
+    def __init__(self, value):
+        self.value = int(value)
+         
+    def ex(self):
+    	return self.value
 
 def p_programme_txt(p):
 	'''programme : txt'''
@@ -139,6 +162,11 @@ def p_expression_string_variable(p):
 	'''expression : FOR variable IN variable DO expression_list ENDFOR'''
 	p[0] = ForNode(p[2],p[4],p[6])
 
+#ADDING INT SUPPORT p3 pointe vers une operation dont le ex renvera la vaeur
+def p_expression_var_operation(p):
+	'''expression : variable EQUALS operation'''
+	p[0] = AssignNode(p[1],p[3])
+
 def p_expression_var_string_expr(p):
 	'''expression : variable EQUALS string_expression'''
 	p[0] = AssignNode(p[1],p[3])
@@ -146,6 +174,18 @@ def p_expression_var_string_expr(p):
 def p_expression_var_string_list(p):
 	'''expression : variable EQUALS string_list'''
 	p[0] = AssignNode(p[1],p[3])
+
+#Adding recursive way to tell operaton
+#variable containing integer is already handled by string_expression
+
+def p_operation_integer(p):
+	'''operation : integer'''
+	p[0] = PassNode(p[1])
+
+def p_operation_rec(p):
+	'''operation : operation ADDOP operation
+	| operation : operation MULOP operation '''
+	p[0] = OperationNode(p[1],p[2],p[3])
 
 #Cas de base : on a une chaine de caractere
 def p_string_expression_string(p):
@@ -171,6 +211,10 @@ def p_string_list_interior_string(p):
 def p_string_list_interior_rec(p):
 	'''string_list_interior : string COMMA string_list_interior'''
 	p[0] = List(p[1],p[3])
+
+def p_integer(p):
+	'''integer : INTEGER'''
+	p[0] = integerNode(p[1])
 
 def p_variable(p):
 	'''variable : VARIABLE'''
