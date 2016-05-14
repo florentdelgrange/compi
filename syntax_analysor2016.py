@@ -317,7 +317,15 @@ yacc.yacc(outputdir='generated')
 
 if __name__ == '__main__':
     import sys
-    reader = lambda x: yacc.parse(file(x).read(), debug=False)
+    reader = lambda x: yacc.parse(file(x).read(), debug=True)
     input = map(reader, sys.argv[1:])
     result = map(lambda result: result.ex(), input)
+    if(len(result) > 1):
+        for i in range(1,len(result)):
+            num = ""
+            if i > 1:
+                num = "_" + str(i - 1)
+            with open(sys.argv[1][:(len(sys.argv[1]) - 6)] + num + ".html", 'w') as f:
+                f.write(result[i])
+                f.close()
     print "\n".join(result)
