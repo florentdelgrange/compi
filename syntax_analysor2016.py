@@ -184,7 +184,7 @@ def p_operation_integer(p):
 
 def p_operation_rec(p):
 	'''operation : operation ADDOP operation
-	| operation : operation MULOP operation '''
+	 | operation MULOP operation '''
 	p[0] = OperationNode(p[1],p[2],p[3])
 
 #Cas de base : on a une chaine de caractere
