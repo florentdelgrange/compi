@@ -33,7 +33,7 @@ def t_ENDFOR(t):
     return t
 
 def t_DO(t):
-    r'do'
+    r'do(\n)*'
     return t
 
 def t_IN(t):
