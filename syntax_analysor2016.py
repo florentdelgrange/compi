@@ -317,8 +317,8 @@ yacc.yacc(outputdir='generated')
 
 if __name__ == '__main__':
 	import sys
-        input = file(sys.argv[1]).read()
-        input += '\n'
-        input += file(sys.argv[2]).read()
+	input = file(sys.argv[1]).read()
+	yacc.parse(input,debug=True)
+	input = file(sys.argv[2]).read()
 	result = yacc.parse(input,debug=True)
 	print result.ex()
