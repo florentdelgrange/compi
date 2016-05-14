@@ -1,0 +1,4 @@
+{{
+	i := 4-3;
+	if true and true do print i; endif;
+}}
