@@ -66,6 +66,20 @@ class PassNode():
 	def ex(self):
 		return self.son.ex()
 
+class ForNode():
+	def __init__(self, *args):
+		self.sons = args
+         
+	def ex(self):
+		var_name = str(self.sons[0]) #nom de la var
+		list_or_var = self.sons[1].ex() #liste (ou rec liste dans une var)
+		action = self.sons[2]
+		res = ""
+		for var in list_or_var:
+			variables[var_name] = var
+			res+=action.ex()
+		return res
+
 def p_programme_txt(p):
 	'''programme : txt'''
 	p[0] = RegularNode(p[1])
@@ -109,12 +123,11 @@ def p_expression_print(p):
 
 def p_expression_string_list(p):
 	'''expression : FOR variable IN string_list DO expression_list ENDFOR'''
-	p[0] = p[1] + p[2] + p[3] + p[4] + p[5] + p[6] + p[7]
-	p[0] = ForNode(p[2],)
+	p[0] = ForNode(p[2],p[4],p[6])
 
 def p_expression_string_variable(p):
 	'''expression : FOR variable IN variable DO expression_list ENDFOR'''
-	p[0] = p[1] + p[2] + p[3] + p[4] + p[5] + p[6] + p[7]
+	p[0] = ForNode(p[2],p[4],p[6])
 
 def p_expression_var_string_expr(p):
 	'''expression : variable EQUALS string_expression'''
