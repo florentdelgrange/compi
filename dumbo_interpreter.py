@@ -1,9 +1,9 @@
 import ply.lex as lex
 
-tokens = ('INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
+tokens = ('ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
 
 t_TXT = r'[a-z|A-Z|0-9|;|&|<|>|"|_|\-|\.|\\|\/|\n|\p|:|,|=]+'
-t_OP = r'\+|\-|'
+t_ADDOP = r'\+|\-|'
 t_MULOP = r'\*|\/'
 
 def t_HOOK_OPEN(t):
