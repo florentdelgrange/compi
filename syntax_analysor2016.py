@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from dumbo_interpreter import tokens
+from lexical_analysor2016 import tokens
 
 variables = {}
 
@@ -16,7 +16,7 @@ class StringNode():
         self.text = text
          
     def ex(self):
-        return str(self.text[1:(len(self.text)-1)])
+        return str(self.text[1:])
 
 class AssignNode():
     def __init__(self, *args):
@@ -71,15 +71,15 @@ class OperationNode():
 		self.left_op = args[0]
 		self.operator = str(args[1])
 		self.right_op = args[2]
+                self.operations = {
+                    '+' : lambda x,y: x+y,
+                    '-' : lambda x,y: x-y,
+                    '/' : lambda x,y: x/y,
+                    '*' : lambda x,y: x*y,
+		}
          
 	def ex(self):
-		operations = {
-		'+' : lambda x,y: x+y,
-		'-' : lambda x,y: x-y,
-		'/' : lambda x,y: x/y,
-		'*' : lambda x,y: x*y,
-		}
-		return operations[self.operator](self.left_op.ex(),self.right_op.ex())
+		return self.operations[self.operator](self.left_op.ex(),self.right_op.ex())
 
 
 class ForNode():
