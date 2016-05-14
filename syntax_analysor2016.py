@@ -317,7 +317,7 @@ yacc.yacc(outputdir='generated')
 
 if __name__ == '__main__':
     import sys
-    reader = lambda x: yacc.parse(file(x).read(), debug=True)
+    reader = lambda x: yacc.parse(file(x).read(), debug=False)
     input = map(reader, sys.argv[1:])
-    result = input[len(input) - 1]
-    print result.ex()
+    result = map(lambda result: result.ex(), input)
+    print "\n".join(result)
