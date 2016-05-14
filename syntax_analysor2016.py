@@ -316,9 +316,9 @@ precedence = (
 yacc.yacc(outputdir='generated')
 
 if __name__ == '__main__':
-	import sys
-        input = file(sys.argv[1]).read()
-        input += '\n'
-        input += file(sys.argv[2]).read()
-	result = yacc.parse(input,debug=True)
-	print result.ex()
+    import sys
+    import operator
+    reader = lambda x, y: x + '\n' + file(y).read()
+    input = reduce(reader, sys.argv[1:], "")
+    result = yacc.parse(input,debug=False)
+    print result.ex()
