@@ -1,9 +1,3 @@
-{{
-cours := ('Intelligence Artificielle', 'Projet Info', 'Simulation');
-prenom := 'Fabian';
-nom := 'Pijcke';
-}}
-
 <html>
 <head><title>{{print nom.' '.prenom; }} </title></head>
 <body>
