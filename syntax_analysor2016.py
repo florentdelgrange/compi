@@ -106,12 +106,49 @@ class ForNode():
 
 		return res
 
+class IfNode():
+	def __init__(self, *args):
+		self.sons = args
+         
+	def ex(self):
+		condition = self.sons[0]
+		action = self.sons[1]
+
+		res = ""
+		if(condition.ex()):
+			res += str(action.ex())
+		return res
+
 class IntegerNode():
     def __init__(self, value):
         self.value = int(value)
          
     def ex(self):
     	return self.value
+
+class BooleanNode():
+    def __init__(self, value):
+        self.value = str(value)
+         
+    def ex(self):
+    	if(self.value == "true"):
+    		return True
+    	else:
+    		return False
+
+class AndOrNode():
+    def __init__(self, *args):
+        self.lhs = args[0]
+        self.op = str(args[1])
+        self.rhs = args[2]
+         
+    def ex(self):
+    	if(self.op == "and"):
+    		return self.rhs.ex() and self.lhs.ex()
+    	else:
+    		return self.rhs.ex() or self.lhs.ex()
+
+
 
 def p_programme_txt(p):
 	'''programme : txt'''
@@ -161,6 +198,10 @@ def p_expression_string_list(p):
 def p_expression_string_variable(p):
 	'''expression : FOR variable IN variable DO expression_list ENDFOR'''
 	p[0] = ForNode(p[2],p[4],p[6])
+
+def p_expression_if(p):
+	''' expression : IF boolean_expression DO expression_list ENDIF'''
+	p[0] = IfNode(p[2],p[4])
 
 #ADDING INT SUPPORT p3 pointe vers une operation dont le ex renvera la vaeur
 def p_expression_var_operation(p):
@@ -212,9 +253,24 @@ def p_string_list_interior_rec(p):
 	'''string_list_interior : string COMMA string_list_interior'''
 	p[0] = List(p[1],p[3])
 
+def p_boolean_expr(p):
+	'''boolean_expression : boolean'''
+	p[0] = PassNode(p[1])
+
+def p_boolean_expr_rec(p):
+	'''boolean_expression : boolean_expression AND boolean_expression
+						  |	boolean_expression OR boolean_expression'''
+
+	p[0] = AndOrNode(p[1],p[2],p[3])
+
 def p_integer(p):
 	'''integer : INTEGER'''
-	p[0] = integerNode(p[1])
+	p[0] = IntegerNode(p[1])
+
+def p_boolean(p):
+	'''boolean : TRUE 
+			   | FALSE'''
+	p[0] = BooleanNode(p[1])
 
 def p_variable(p):
 	'''variable : VARIABLE'''
@@ -227,6 +283,15 @@ def p_string(p):
 
 def p_error(p):
 	print("Syntax error in line{}".format(p.lineno))
+
+
+precedence = (
+	("left", "ADDOP"),
+	("left", "MULOP"),
+	("left", "DOT"),
+	("left", "AND"),
+	("left", "OR"),
+	)
 
 yacc.yacc(outputdir='generated')
 
