@@ -1,10 +1,8 @@
 import ply.lex as lex
 
-tokens = ('ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
+tokens = ('TRUE','FALSE','OR','AND','ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
 
 t_TXT = r'[a-z|A-Z|0-9|;|&|<|>|"|_|\-|\.|\\|\/|\n|\p|:|,|=]+'
-t_ADDOP = r'\+|\-'
-t_MULOP = r'\*|\/'
 
 def t_HOOK_OPEN(t):
     r'\{(\n)*'
@@ -56,6 +54,30 @@ def t_SEMICOLON(t):
 
 def t_EQUALS(t):
     r':='
+    return t
+
+def t_ADDOP(t):
+    r'\+|\-'
+    return t
+
+def t_MULOP(t):
+    r'\*|\/'
+    return t
+
+def t_TRUE(t):
+    r'true'
+    return t
+
+def t_FALSE(t):
+    r'false'
+    return t
+
+def t_AND(t):
+    r'and'
+    return t
+
+def t_OR(t):
+    r'or'
     return t
 
 def t_STRING(t):
