@@ -1,5 +1,0 @@
-{{
-cours := ('Intelligence Artificielle', 'Projet Info', 'Simulation');
-prenom := 'Fabian';
-nom := 'Pijcke';
-}}
