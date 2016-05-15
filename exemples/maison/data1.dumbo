@@ -1,5 +1,6 @@
 {{
 cours := ('Intelligence Artificielle', 'Projet Info', 'Simulation');
+dernier_elem_list := 2;
 prenom := 'Fabian';
 nom := 'Pijcke';
 }}
