@@ -16,7 +16,7 @@ class StringNode():
         self.text = text
          
     def ex(self):
-        return str(self.text[1:])
+        return str(self.text[1:(len(self.text)-1)])
 
 class AssignNode():
     def __init__(self, *args):
@@ -234,6 +234,10 @@ def p_expression_var_string_list(p):
 
 def p_operation_integer(p):
 	'''operation : integer'''
+	p[0] = PassNode(p[1])
+
+def p_operation_var(p):
+	'''operation : variable'''
 	p[0] = PassNode(p[1])
 
 def p_operation_rec(p):
