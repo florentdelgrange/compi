@@ -3,7 +3,7 @@ import ply.lex as lex
 tokens = ('LT','BT','EQ','NE','IF','ENDIF','TRUE','FALSE','OR','AND','ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
 
 states = (
-( 'inBlock' , 'inclusive' ) ,
+( 'inBlock' , 'exclusive' ) ,
 )
 
 def t_HOOK_OPEN(t):
@@ -93,7 +93,7 @@ def t_inBlock_ENDIF(t):
     return t
 
 def t_TXT(t):
-    r'[a-z|A-Z|0-9|;|&|<|>|"|_|\-|\.|\\|\/|\n|\p|:|,|=]+'
+    r'[a-z|A-Z|0-9|;|&|<|>|"|_|\-|\.|\\|\/|\n|\p|:|,|=| ]+'
     return t
 
 def t_inBlock_LT(t):
@@ -126,7 +126,7 @@ def t_inBlock_VARIABLE(t):
     r'[a-z|A-Z|0-9_]+'
     return t
 
-t_ignore = ' \t'
+t_ignore = '\t'
 t_inBlock_ignore = ' |\n|\t'
 
 def t_error(t):
