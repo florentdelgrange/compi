@@ -1,0 +1,7 @@
+<html>
+<head><title>{{print nom.' '.prenom; }} </title></head>
+<body>
+Cours:{{ for c in cours do print c.',<br />';
+endfor;}}
+</body>
+</html>

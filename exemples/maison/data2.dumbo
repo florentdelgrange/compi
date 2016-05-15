@@ -1,0 +1,5 @@
+{{
+nom := 'Devillez';
+prenom := 'Gauvin';
+cours := ('Algo1', 'Algo2', 'Projet info', 'SDD1', 'SDD2');
+}}
