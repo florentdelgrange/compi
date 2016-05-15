@@ -186,8 +186,8 @@ def p_txt(p):
 	p[0] = TextNode(p[1])
 
 def p_dumbo_bloc(p):
-	'''dumbo_bloc : HOOK_OPEN HOOK_OPEN expression_list HOOK_CLOSE HOOK_CLOSE'''
-	p[0] = RegularNode(p[3])
+	'''dumbo_bloc : HOOK_OPEN expression_list HOOK_CLOSE'''
+	p[0] = RegularNode(p[2])
 
 #Plusieurs instructions separees de virgules on veut print le res de chaque exp
 def p_expression_list(p):
