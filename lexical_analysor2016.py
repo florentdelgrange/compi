@@ -1,10 +1,30 @@
 import ply.lex as lex
 
-tokens = ('LT','BT','EQ','NE','IF','ENDIF','TRUE','FALSE','OR','AND','ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
+tokens = ('LT','BT','EQ','NE','IF','ENDIF','TRUE','FALSE','OR','AND','ADDOP','MULOP','INTEGER','TXT', 'VARIABLE', 'STRING', 'HOOK_OPEN', 
+    'HOOK_CLOSE', 'SEMICOLON', 'PRINT', 'FOR', 'IN', 'DO', 'ENDFOR', 'EQUALS', 'DOT', 'COMMA', 'PARENTHESIS_OPEN', 'PARENTHESIS_CLOSE')
 
 states = (
 ( 'inBlock' , 'exclusive' ) ,
 )
+reserved = {
+'if' : 'IF',
+'endif' : 'ENDIF',
+'true' : 'TRUE',
+'false' : 'FALSE',
+'or' : 'OR',
+'and' : 'AND',
+'print' : 'PRINT',
+'for' : 'FOR',
+'in' : 'IN',
+'do' : 'DO',
+'endfor' : 'ENDFOR'
+}
+
+def t_inBlock_VARIABLE(t):
+    r'[a-z|A-Z]+[a-z|A-Z|0-9_]*'
+    if t.value in reserved:
+        t.type = reserved[t.value]
+    return t
 
 def t_HOOK_OPEN(t):
     r'\{\{(\n)*'
@@ -122,9 +142,6 @@ def t_inBlock_INTEGER(t):
     t.value = int(t.value)
     return t
 
-def t_inBlock_VARIABLE(t):
-    r'[a-z|A-Z|0-9_]+'
-    return t
 
 t_ignore = '\t'
 t_inBlock_ignore = ' |\n|\t'
