@@ -1,0 +1,13 @@
+{{
+	titre := 'Le titre principal';
+	titre_secondaire := 'Quelques tests';
+	todo := ('Pas de booleens dans des variables','Pas de comparaisons integer-variable','Pas de comparaison integer-integer');
+	int1 := 1;
+	int5 := 5;
+	int10 := 10;
+	int_expression1 := 10/2*5+1;
+	int_expression2 := int1+int5*int10-20;
+	attendu1 := 26;
+	attendu2 := 31;
+	counter := 1;
+}}

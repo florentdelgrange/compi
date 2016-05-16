@@ -1,0 +1,41 @@
+<html>
+<head><title>{{ print titre}}</title ></head>
+<body>
+<h1>{{ print '<b>'.titre_secondaire.'</b>'; }}</h1></br>
+
+Liste des ajouts possibles : </br>
+
+{{
+
+stop := 3;
+
+for elem in todo do
+
+	print elem.'</br>';
+
+	if counter = stop do 
+		print 'Fin de liste </br>'; 
+	endif;
+
+counter := counter+1;
+endfor; 
+
+print 'Taille de la liste : '.counter.'</br>';
+
+print 'expr1 :'.int_expression1.'</br>'.'expr2 :'.int_expression2.'</br>';
+
+if int_expression1 = attendu1 do
+	print int_expression1.' = '.attendu1.'</br>';
+endif;
+
+if int_expression2 = attendu2 do
+	print int_expression2.' = '.attendu2.'</br>';
+endif;
+
+if int_expression2 = stop do
+	print 'ne sera pas print </br>';
+endif;
+
+}}
+</body>
+</html>
