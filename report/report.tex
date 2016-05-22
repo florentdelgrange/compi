@@ -3,6 +3,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usepackage{float}
 \usepackage{longtable}
 \usepackage{hyperref}
@@ -83,9 +84,22 @@ Nous expliquerons dans ce rapport les techniques utilisées ainsi que la grammai
 
 \section{Méthodes utilisées}
 \subsection{Arbre de dérivation}
-
 \subsection{Stockage des variables}
-arbre de dérivation 
+\begin{tikzpicture}[sibling distance=10em,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white, bottom color=blue!20}]]
+    \node {Regular Node}
+    	child { node  {TextNode \\ <html>} }
+    	child{ node {Regular Node}
+    		child { node {Regular Node}
+    			child { node{String Node \\ 'mot 1'} }
+    			child { node{String Node \\ 'mot 2'} }
+    		}
+    		child { node{TextNode \\ </html>} }
+    	}
+    			
+\end{tikzpicture}
 
 \section{Grammaire}
 Voici la grammaire finale utilisée dans notre projet : \\
