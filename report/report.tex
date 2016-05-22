@@ -76,21 +76,14 @@ Noémie Meunier
 \newpage
 
 \section{Introduction}
-Le but de ce projet est d'implémenter un compilateur pour le language \textrm{Dumbo}. Il est demandé d'adapter la grammaire fournie dans l'énoncé pour qu'elle gère les 
-expressions arithmétiques, les booléens ainsi que les structures de controle \textbf{if} et les boucles \textbf{for}.
+Le but de ce projet est d'implémenter un compilateur pour le language \textrm{Dumbo}. Il est demandé d'adapter la grammaire fournie dans l'énoncé pour 
+qu'elle gère les expressions arithmétiques, les expressions booléennes ainsi que les structures de contrôle \textbf{if} et les boucles \textbf{for}.
+Ce rapport a pout but d'expliquer les techniques que nous avons utilisées afin de réaliser ce compilateur.
 
-Nous expliquerons dans ce rapport les techniques utilisées ainsi que la grammaire finale que nous avons obtenue.
-
-\section{Méthodes utilisées}
-\subsection{Arbre de dérivation}
-
-\subsection{Stockage des variables}
-arbre de dérivation 
-
-\section{Grammaire}
-Voici la grammaire finale utilisée dans notre projet : \\
-< programme > $\rightarrow$ < txt > \\
-<programme > $\rightarrow$ < txt > < programme > \\
+\section{Grammaire utilisée}
+La grammaire utilisée dans ce projet est une version plus complète de la grammaire fournie dans l'énoncé :\newline
+{\small
+< programme > $\rightarrow$ < txt > | < txt > < programme >\\
 < programme > $\rightarrow$ < dumbo\_bloc > \\
 < programme > $\rightarrow$ < dumbo\_bloc > < programme > \\
 < txt > $\rightarrow$ [a-zA-Z0-9; \& <> ” − .\textbackslash / \textbackslash n \textbackslash p :, ]+ \\
@@ -124,10 +117,10 @@ Voici la grammaire finale utilisée dans notre projet : \\
 < boolean\_expression > $\rightarrow$ < variable > = < variable >\\
 < boolean\_expression > $\rightarrow$ < variable > != < variable >\\
 < boolean > $\rightarrow$ [true|false]\\
-< integer > $\rightarrow$ [\d+] \\
+< integer > $\rightarrow$ \textbackslash d+\\
 < variable > $\rightarrow$ [a-z|A-Z]+[a-z|A-Z|0-9\_]*\\
-< string > $\rightarrow$ '[a − zA − Z0 − 9; \& <> ” − .\textbackslash / \textbackslash n\textbackslash p :, =]+' \\
-
+< string > $\rightarrow$ '[a-zA-Z0-9; \& <> ” − .\textbackslash / \textbackslash n\textbackslash p :, =]+' \\
+}
 Nous avons tout d'abord  ajoutés les opérations qui permettent de traiter des opérations arithmétiques sur des entiers ou des variables contenant des entiers et 
 stocker le résultat dans une variable. Nous avons aussi ajoutés les expressions booléennes qui permettent le and et le or ainsi que des booléens qui permettent de co
 comaprer des entiers contenus dans des variables. Ces booléens sont utilisés pour la structure de contreol if et doivent être mis tel qu'ils sont et non dans 
@@ -214,9 +207,9 @@ Lors de l'analyse syntaxique, l'arbre de dérivation est créé. Chaque règle d
 de l'arbre ainsi créé est retourné lorsque l'analyse syntaxique est terminée. Il ne nous reste plus qu'à demander l'exécution de l'arbre qui se fait en appellant
 la méthode \textrm{ex()} sur la racine. Celui-ci va alors récursivement appeller cette méthode sur ces fils et récupérer le résultat de cette exécution qui sera le
 résultat de l'exécution du programme. Nous avons illustré ce principe via l'exemple de programme suivant : \\
-'''programme : dumbo_bloc programme'''
-	p[0] = RegularNode(p[1],p[2])
-	
+programme : dumbobloc programme
+p[0] = RegularNode(p[1],p[2])
+
 \subsection{Mode d'emplois}
 
 \end{document}
