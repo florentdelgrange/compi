@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-from lexical_analysor2016 import tokens
+from lexical_analyzer import tokens
 
 variables = {}
 
@@ -24,7 +24,7 @@ class AssignNode():
         self.rhs = args[1]
 
     def ex(self):
-    	print "debug"+str(self.var_name)
+    	#print "debug"+str(self.var_name)
         variables[str(self.var_name)] = self.rhs.ex()
         return ""
 
@@ -321,10 +321,9 @@ yacc.yacc(outputdir='generated')
 
 if __name__ == '__main__':
     import sys
-    reader = lambda x: yacc.parse(file(x).read(), debug=True)
+    reader = lambda x: yacc.parse(file(x).read(), debug=False)
     input = map(reader, sys.argv[1:3])
     result = map(lambda result: result.ex(), input)
     with open(sys.argv[3] + ".html", 'w') as f:
         f.write(result[1])
         f.close()
-    print "\n".join(result)
