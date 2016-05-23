@@ -83,7 +83,7 @@ qu'elle gère les expressions arithmétiques, les expressions booléennes ainsi 
 Ce rapport a pout but d'expliquer les techniques que nous avons utilisées afin de réaliser ce compilateur.
 
 \section{Grammaire utilisée}
-La grammaire utilisée dans ce projet est une version plus complète de la grammaire fournie dans l'énoncé :\newline
+Afin d'ajouter certaines fonctionnalités, nous avons avons ajoutés certaines règles à la grammaire fournie dans l'énoncé.\newline
 {\small
 < programme > $\rightarrow$ < txt > | < txt > < programme >\\
 < programme > $\rightarrow$ < dumbo\_bloc > \\
@@ -124,19 +124,26 @@ La grammaire utilisée dans ce projet est une version plus complète de la gramm
 < string > $\rightarrow$ '[a-zA-Z0-9; \& <> ” − .\textbackslash / \textbackslash n\textbackslash p :, =]+' \\
 }
 
-Nous avons tout d'abord ajoutés les < operation > qui permettent de stocker dans des variables des entiers, des variables contenant des entiers ou bien le résultat
-de calculs sur des entiers et variables contenant des entiers. Nous avons ensuite ajoutés les expressions booléennes. Celles-ci sont utilisées comme conditions dans 
-le \textbf{if}. Nous ne permettons pas de stocker des expressions booléennes dans des entiers, celles-ci étant seulement utilisées pour le \textbf{if}. Une expression
-booléenne peut être \textrm{true} ou \textrm{false}, elle peut aussi être le résultat d'une comparaison de deux entiers contenus dans des variables. Nous permettons
-aussi d'effectuer des \textrm{or} et \textrm{and} entre plusieurs expressions booléennes. 
-des variables.
+Nous avons tout d'abord ajoutés les règles < operation > qui permettent de stocker dans des variables des entiers, des variables contenant des entiers ou bien le résultat
+de calculs sur des entiers. Nous avons ensuite ajoutés les expressions booléennes. Celles-ci sont utilisées comme conditions dans 
+le \textrm{if}. Nous ne permettons pas de stocker des expressions booléennes dans des variables, ces expressions étant seulement utilisées la structure de contrôle \textrm{if}. 
+Une expression booléenne peut être \textrm{true} ou \textrm{false}, elle peut aussi être le résultat d'une comparaison de deux entiers contenus dans des variables. Nous permettons
+aussi d'effectuer des tests \textrm{or} et \textrm{and} entre plusieurs expressions booléennes.
+
+Cette grammaire ainsi modifiée ne nous permet cependant pas certaines fonctionnalités, qui n'étaient pas expressément demandées dans l'énoncé :
+\begin{itemize}
+ \item Nous ne permettons pas de stocker des valeurs booléennes dans des variables
+ \item Nous ne permettons pas les comparaisons entre entiers et variables ou entre entiers. Lors des comparaisons, seules des entiers contenus dans des variables
+ peuvent être utilisés
+\end{itemize}
+
 
 \section{Arbre de dérivation}
 Lors de l'analyse syntaxique, un arbre de dérivation est créé. Une fois une règle de la grammaire détectée, un noeud spécial correspondant à cette règle est
 créé. Chaque noeud peut posséder ou non des fils et son exécution peut résulter en un comportement différent. Nous obtenons à la fin de l'analyse syntaxique un arbre de dérivation. La racine de l'arbre ainsi créé est 
 retourné lorsque l'analyse syntaxique est terminée. Pour exécuter le code contenu dans l'arbre il ne nous reste plus qu'à demander l'exécution de l'arbre, 
 ce qui se fait en appellant la méthode \textrm{ex()} sur la racine. Celle-ci va alors récursivement appeller cette méthode sur ses fils et récupérer le résultat 
-de leur exécution exécution qui sera le résultat de l'exécution du programme. Nous avons illustré ce principe via l'exemple de programme suivant : \\
+de leur exécution ce qui nous donnera le résultat de l'exécution du programme entier. Nous avons illustré ce principe via l'exemple de programme suivant : \\
 \begin{verbatim}
 <html>
 {{
@@ -162,41 +169,55 @@ Lorsque nous appliquerons notre analyseur syntaxique sur ce code, l'arbre suivan
     };
 \end{tikzpicture}
 
-Appliquer \textrm{ex()} sur la racine de cet arbre pour en exécuter le code va avoir le comportement suivant : \\
-La racine va demander le résultat de l'exécution de son premier fils, celui-ci va renvoyer le texte qu'il contient. Le résultat du deuxième fils sera alors
-demandé, récursivement ce noeud va demander le résultat de son premier fils, qui renverra la chaine de caractère \textrm{mot1} qu'il contient sans les \textbf{'} (ceci étant le comportement
-spécifique aux noeuds stockant les chaines de caractère). Il en sera de même pour son fils droit qui renverra \textrm{mot2}. Le père contindra alors la chaine de
+Appliquer \textrm{ex()} sur la racine de cet arbre pour exécuter le programme qu'il représente va avoir le comportement suivant : \\
+La racine va demander le résultat de l'exécution de son premier fils, celui-ci étant un noeud texte, il va renvoyer le texte qu'il contient. Le résultat du deuxième fils sera alors
+demandé, récursivement ce noeud va demander le résultat de son premier fils, qui renverra la chaine de caractère \textrm{mot1} qu'il contient sans les \textbf{'}. Ceci est le comportement
+spécifique aux noeuds stockant les chaines de caractère. Il en sera de même pour son fils droit qui renverra \textrm{mot2}. Le père contiendra alors la chaine de
 caractère \textrm{mot1mot2} qu'il renverra à son propre père. Celui-ci va demander l'exécution de son deuxième fils, qui est un noeud texte renvoyant \textrm{<\textbackslash html>}
-La racine possédant alors le résultat de l'exécution de tout ses fils correspondant à l'exécution du programme complet elle peut renvoyer ce résultat.
+La racine possédant alors le résultat de l'exécution de tout ses fils, elle met ensemble ces résultats et renvoie la valeur obtenue. Cette valeur correspond au résultat de 
+l'exécution du programme contenu dans l'arbre. En résumé, chaque noeud de l'arbre construit a une fonction spécifique et renverra le résultat de son exécution sous forme d'une chaine de caractère.
+Certains noeuds ont une fonction particulière qui ne renvoie aucunne donnée. C'est le cas des noeuds d'assignation qui servent juste à ajouter une valeur dans le dictionnaire qui sert de 
+table de variables (chaque variable étant une paire clé-valeur). Ce noeud lorsqu'il est exécuté se contente d'ajouter dans la table la clé qu'il contient et d'y associer la valeur demandée
+par l'assignation (cette valeur résulte de l'exécution d'un autre noeud, par exemple d'un noeud réalisant des opérations arithmétiques). \\
+Ajouter une règle à la grammaire est alors facile puisqu'il suffira de créer un noeud qui gèrera le comportement voulu lors de la détection de cette règle. 
 
-Nous obtenons ainsi le résultat de l'exécution : 
 \section{Gestion du \textbf{if} et \textbf{for}}
-Le if a été implémenté via la règle < expression > $\rightarrow$ if < boolean\_expression > do < expression\_list > endif \\
-La détection du mot clé if commence la détection de cette règle, nous détectons ensuite une expression booléenne et effectuons ensuite des expressions. Ceci
-est géré dans l'arbre par un noeud spécial créé lors de la détection de cette règle. Celui-ci vérifie d'abord si la condition est vérifiée (l'expression correspond d
-directement à du code python) si c'est le cas, le corps sera exécuté via le noeud correspondant nous récupérons le résultat de son exécution et l'ajoutons.
-Si ce n'est pas le cas alors nous n'affichons rien. L'utilisation de noeuds gérant les différents aspects permet une gestion intuitive de ces structures. En effet,
-voici le code correspondant à :
+Pour implémenter la structure de contrôle \textrm{if}, nous avons tout d'abord ajoutés les lexèmes \textbf{if} et \textbf{endif} dans l'analyseur lexical. Nous avons ensuite ajouté la 
+règle suivante à la grammaire : < expression > $\rightarrow$ if < boolean\_expression > do < expression\_list > endif \\
+Lorsque cette règle est détectée par l'interpréteur, un noeud gérant le if est créé. Il possède une référence au noeud contenant la condition booléenne et une référence au noeud qui correspond
+à l'action à effectuer si cette condition est vérifiée. Lors de l'exécution du noeud \textrm{if}, nous exécutons le noeud qui contient la condition booléenne. Le résultat de cette exécution
+est récupéré et si la condition était vérifiée (\textrm{True} est renvoyé) alors nous exécutons le noeud contenant l'action à effectuer et le résultat de cette exécution est renvoyé. \\
+Au final à la fin de l'exécution du noeud, une chaine de caractère est renvoyée et celle-ci contient soit le résultat de l'exécution de l'action du if si la condition était vraie, soit une
+chaine de caratère vide si la condition était fausse. 
+\newline
+Le noeud gérant le \textrm{if} est implémenté de la manière suivante : \\
 \begin{verbatim}
 
 class IfNode():
    def __init__(self, *args):
+      #Le noeud prend en paramètre les noeuds contenant la condition et l'action du if, dans l'ordre fourni par la règle
       self.sons = args
          
    def ex(self):
       condition = self.sons[0]
       action = self.sons[1]
 
-      res = ""
+      res = "" #Le résultat est une chaine vide, sauf si la condition est vraie
       if(condition.ex()):
-         res += str(action.ex())
+         res += str(action.ex()) #Si l'exécution du noeud contenant la condition est vraie, nous exécutons le noeud contenant l'action
       return res
  
 \end{verbatim}
-L'éxécution de ce noeud vérifie si l'éxécution du noeud correspondant à l'expression booléenne est vraie, si c'est le cas il exécute le noeud correspondant à
-la condition, sinon il retourne une chaine vide (ce qui est équivalent à ne rien retourner).
 
-Le for se fait de la même façon, nous prenons en paramètre une condition 
+Le \textrm{for} est créé avec la même logique que le \textrm{if}. Une fois une règle pour le \textrm{for} détectée, un noeud spécil est créé. Celui-ci prend en paramètre le noeud contenant
+la variable, le noeud contenant la liste et le noeud contenant l'action à effectuer. Nous commencons d'abord par vérifier que la variable utilisée dans le for n'existe pas déjà dans la 
+table des symboles. Si elle éxiste déjà, nous retenons sa valeur initiale pour la réassigner à la fin de la boucle. Nous récupérons ensuite la liste d'éléments contenue dans un noeud de variable
+ou dans un noeud de liste via son exécution. Nous remarquons ici l'utilité d'avoir des noeuds différents implémentant chacun leur propre manière de s'exécuter. Si une variable contenant
+une liste a été fournie, l'exécution du noeud contenant cette variable renverra la valeur associée au nom de la variable dans la table de variables. Si une liste a été directement fournie,
+l'exécution du noeud renverra simplement cette liste. Cette méthode nous permet de ne pas faire la différence entre une liste contenue dans une variable ou une liste donnée directement, l'exécution
+du noeud renverra une liste indépendamment de son type. Il nous suffit ensuite de parcourir chaque élément de la liste, d'assigner à la variable la valeur de l'élément courrant dans la table
+des variables et d'effectuer l'action via l'exécution du noeud la contenant. Le résultat de cette exécution est récupéré dans une chaine de caractère et sera renvoyé une fois la boucle 
+terminée. Il ne nous reste enfin qu'à rendre à la variable sa valeur initiale si elle en avait une et de renvoyer le résultat de l'exécution de la boucle.
 \begin{verbatim}
  class ForNode():
    def __init__(self, *args):
@@ -226,27 +247,22 @@ Le for se fait de la même façon, nous prenons en paramètre une condition
       return res
 \end{verbatim}
 
-Nous vérifions d'abord si la varable utilisée dans le for est une variable déjà initialisée quelque part. Il est important que cette variable garde sa valeur
-initiale à la fin de l'éxécution de la boucle. Nous nous occupons donc de retenir la valeur initiale si elle éxiste. Nous récupérons ensuite le contenu de la 
-variable qui est une liste ou bien directement une liste via l'exécution du noeud correspondant. Pour chaque élément de la liste, nous affectons sa valeur à la variable
-temporaire dans notre liste globale de variables et exécutons ensuite le corps de la via acction.ex(). Nous ajoutons le résultat à une chaine de caractère qui
-sera renvoyée à la fin de l'exécution du noeud.
-
 \section{Difficultés rencontrées}
-\subsection{arbre de dérivation}
-Lorceque nous avons débutés ce projet, nous avons mis du temps à comprendre que l'analyseur syntxique construisait l'arbre de dérivation et l'écutait au fur 
-et à mesure dans les exemples des Tps. Nous nous sommes alors rendus compte que nous dervions implémenter une structure de donnée avec des noeuds portant différentes
-fonctions pour exécuter le code et remonter à la racine de l'arbre les valeurs
+
 \subsection{Mauvaise détection des lexèmes}
-Nous nous sommes rendu compte qu'il nous faudrait deux états, l'un pour détecter des lexèmes lorsque nous étions hors d'un dumbo bloc contenant du code et l'autre
-lorsque nous étions dans un dumbo bloc. Nous avons appellés cet état inBlock. Hors de cet état, juste du etxte peut être détecté. Un noeud texte contient alors la chaine
-de caractère associée. Lorsque deux {{ sont rencontrés, nous entrons dans l'état inBlock et les mots clés ainsi que variables peuvent êter détectés. Le
-compilateur ne confondra pas le TXT avec des noms de varaibles puisque chacun de ces lexèmes appartient à un état différent et le compilateur peut alors les 
-diféfrecier selon l'état dans lequel il se trouve. Dans l'état inBlock nous avons remarqués que les symboles réservés du languages ainsi que les nombres entiers 
-étaient détectés comme des noms de variables. En effet le lexème variale étant le premier, lorsque le compilateur rencontre un if, celui-ci était détecté comme 
-une vriable et rendait l'exécution impossible. Il en est de même pour or, and, ect. Nous avons réglés ce problème avec un dictionnaire de mots clés réservés.
-Lorsque if est détecté comme une variable, le dictionnaire est consulté, if faisant partie du dictionnaire de mots clé, et le type correspond à if dans ce ditonaire
-étant IF, la valeur du lexème est modifiée. En ce qui concerne les nombres entiers, nous avons empéchés les noms de variables de commencer par un entier, comme cela
-se fait dans de nombreux autres languages ce qui enlèves l'ambiguité entre les nombres entiers et les variables.
+Lors de nos tests, nous nous sommes rendu compte que l'analyseur lexical détectait mal certains lexèmes. Tout d'abord, le lexème texte était parfois détecté comme un lexème de variable
+et vice-versa. La solution que nous avons trouvé a été de créer deux états dans l'analyseur lexical, l'un pour détecter des lexèmes lorsque nous étions hors d'un dumbo bloc 
+contenant du code Dumbo et l'autre lorsque nous étions dans un dumbo bloc. Nous avons appellés cet état inBlock. Hors de cet état, seul le lexème texte peut être détecté. 
+Lorsque le lexème HOOK\_OPEN signifiant l'entrée dans un dumbo bloc est rencontré, l'analyseur lexical entre dans l'état inBlock et seul les mots clés ainsi que les variables, entiers et 
+chaines de caractère peuvent être détectés. L'analyseur ne pourra pas confondre les lexèmes texte et variable car chacun de ces lexèmes appartient à un état différent et l'analyseur 
+ne peut détecter qu'un seul de ces lexèmes selon l'état dans lequel il se trouve. \\
+L'autre problème que nous avons rencontrés est le suivant : dans l'état inBlock nous avons remarqués que les symboles réservés du languages ainsi que les nombres entiers 
+étaient détectés comme des noms de variables dans certains cas. En effet le lexème variable étant le premier décrit dans cet état, lorsque l'analyseur rencontrait un \textrm{if} celui-ci 
+était détecté comme une vriable et rendait l'exécution impossible. Il en est de même pour \textrm{or}, \textrm{and}, ect. Nous avons réglé ce problème via l'utilisation d'un dictionnaire
+de mots réservés dans le language. Lorsque \textrm{if} est détecté comme une variable, ce dictionnaire est consulté avec \textrm{if} comme clé. Si if faisant partie du dictionnaire 
+alors nous savons que c'est un mot réservé, la valeur correspondant à \textrm{if} dans le dictionnaire est le type correct de lexème à associer à \textrm{if}. Ceci n'empèche pas la détection
+de mots réservés comme lexèmes de type variable mais corrige leur type lorsque cette mauvaise détection arrive.\\
+En ce qui concerne les nombres entiers, nous avons empéchés les noms de variables de commencer par un entier. Ceci empèche les entiers d'être confondus avec des noms de variable. 
+Cette restriction ne nous a pas parru mauvaise car elle se fait dans de nombreux autres languages de programmation.
 
 \end{document}
